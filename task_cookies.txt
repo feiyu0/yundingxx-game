@@ -1,0 +1,4 @@
+[
+["用户名1","token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxx【cookie1】"],
+["用户名2","token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xxx【cookie2】"],
+]
