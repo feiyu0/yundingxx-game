@@ -62,6 +62,9 @@ def checkFationtask(cookie,username,fation_task_fliter):
 				#if res['data'][x]['task']['name'] not in fation_task_fliter:
 					m = 0
 					for i in range(len(res['data'][x]['needGoods'])):
+						if res['data'][x]['needGoods'][i]['name'] in goods_fliter:
+							m = 1
+							print('存在不想要提供的物品')
 						if res['data'][x]['needGoods'][i]['have_count'] < res['data'][x]['needGoods'][i]['need_count']:
 							m = 1
 							pass
@@ -69,6 +72,7 @@ def checkFationtask(cookie,username,fation_task_fliter):
 					if m == 0:
 						pay_task(cookie, username,res['data'][x]['utid'],res['data'][x]['task']['name'])
 					else:
+						print('放弃无法完成的任务，任务名为：'+res['data'][x]['task']['name'])
 						closeUserTask(cookie, username,res['data'][x]['utid'],res['data'][x]['task']['name'])
 						pass
 					pass
@@ -120,7 +124,6 @@ def closeUserTask(cookie, username,task_code,task_name):
         print('503错误，超时请等待重试')
         return '超时'
     elif res['code'] == 200:
-        print(username+'成功放弃任务，任务名为：'+task_name)
         return '任务完成'
     elif res['code'] == 400:
     	print(username+'活力不足5点，无法放弃任务~')
@@ -143,7 +146,7 @@ def getFationTask(cookie, username):
         print('503错误，超时请等待重试')
         return '超时'
     elif res['code'] == 200:
-        print(username+'成功领取帮派')
+        print(username+'成功领取帮派任务')
         return '任务完成'
     elif res['code'] == 304:
     	print(username+'已达到领取上限')
@@ -165,6 +168,7 @@ cookies = cookies_f.read()
 cookies_f.close() 
 cookies = json.loads(cookies) 
 
+#任务名单
 fation_task_fliter = [
 '奇珍异兽的皮毛',
 '武器库储备',
@@ -177,8 +181,16 @@ fation_task_fliter = [
 '孔雀的羽毛',
 ]
 
+#过滤不想交出去的物品
+goods_fliter = [
+'鉴-干将',
+]
 
-
+end_task = [
+'需要刷新帮派任务！',
+'领取上限',
+'活力不足'
+]
 #战斗前准备，统计账号数量，设置计数，设置默认地图
 cookie_len = len(cookies)
 print('总共有%d个账号在运行' %(cookie_len))
@@ -199,11 +211,8 @@ while 0 in fation_task_id:
 		if get_FationTask == '超时':
 		    time.sleep(1)
 		    continue
-		elif get_FationTask == '需要刷新帮派任务！' or :
+		elif get_FationTask in end_task:
 			fation_task_id[cookie_count] = 1
-		elif get_FationTask == '领取上限':
-			fation_task_id[cookie_count] = 1
-			pass
 		time.sleep(1)
 		check_Fationtask = checkFationtask(cookie,username,fation_task_fliter)
 		if check_Fationtask == '超时':
